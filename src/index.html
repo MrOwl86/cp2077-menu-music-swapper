@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cyberpunk 2077 – Menu Music</title>
+<style>
+:root{--bg:#08040f;--card:#150c22;--card2:#1b1030;--line:#3a2456;--tx:#efe9f7;--mu:#9a8bb3;--ac:#fcee0a;--ac2:#fff56b;--ok:#3ecf8e;--er:#ff6b6b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{color:var(--tx);font:14px/1.45 "Segoe UI",system-ui,sans-serif;background:var(--bg);display:grid;grid-template-columns:minmax(300px,38%) 1fr}
+.art{position:relative;overflow:hidden;background:#000}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.art:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--bg) 100%),linear-gradient(180deg,transparent 70%,#000a 100%)}
+.main{display:flex;flex-direction:column;min-height:0;padding:22px 26px 14px 22px}
+.eyebrow{letter-spacing:.3em;font-size:11px;color:var(--mu);text-transform:uppercase}
+h1{margin:2px 0 8px;font-size:38px;line-height:1;letter-spacing:.05em;text-transform:uppercase;font-weight:800;color:var(--ac)}
+h1 span{color:var(--tx)}
+#status{min-height:46px;margin-bottom:10px;display:flex;align-items:center}
+.lead{color:var(--mu);margin:0}
+#msg{display:none;width:100%;border-radius:10px;padding:9px 12px;white-space:pre-wrap;font-size:13px}
+#msg.ok{display:block;background:#12301f;color:var(--ok);border:1px solid #1d4a38}
+#msg.er{display:block;background:#3a1a1a;color:var(--er);border:1px solid #5a2a2a}
+#msg.in{display:block;background:#1c2232;color:var(--tx);border:1px solid var(--line)}
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.lbl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.now{display:flex;align-items:center;gap:14px}
+.disc{flex:none;width:50px;height:50px}.disc svg{width:100%;height:100%}
+.custom .disc svg,.playing .disc svg{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.now b{font-size:16px;word-break:break-all}.now small{display:block;color:var(--mu)}
+.wave{margin-left:auto;display:flex;gap:3px;align-items:center;height:34px;flex:none}
+.wave i{display:block;width:4px;height:100%;border-radius:2px;background:#4a3470;transform:scaleY(.2)}
+.custom .wave i,.playing .wave i{background:var(--ac);animation:b 1.2s ease-in-out infinite}
+.wave i:nth-child(3n){animation-delay:.2s}.wave i:nth-child(3n+1){animation-delay:.45s}.wave i:nth-child(4n){animation-delay:.7s}.wave i:nth-child(5n){animation-delay:.1s}
+@keyframes b{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
+.listen{margin-top:10px;display:flex;gap:10px;align-items:center}
+.listen audio{flex:1;height:34px;display:none}.listen audio.on{display:block}
+.drop{border:2px dashed #5a3f82;border-radius:12px;padding:16px 14px;text-align:center;cursor:pointer;transition:.15s;background:#ffffff03}
+.drop:hover,.drop.over{border-color:var(--ac);background:#fcee0a10}
+.drop svg{width:38px;height:38px;margin-bottom:2px}
+.drop big{display:block;font-size:16px;font-weight:600}.drop span{color:var(--mu);font-size:12px}
+.file{display:none}.file.show{display:block}
+.fname{font-weight:600;word-break:break-all}.fmeta{color:var(--mu);font-size:12px}
+.song audio{width:100%;height:34px;margin-top:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chips span{font-size:12px;color:#cfd3de;background:#2a1b44;border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+.chips span:before{content:"✓ ";color:var(--ok);font-weight:700}
+select{font:inherit;background:var(--card2);color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:8px 8px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--tx);padding:8px 14px}
+button:hover{border-color:var(--ac)}
+button.go{width:100%;padding:13px;font-size:15px;font-weight:700;letter-spacing:.04em;background:var(--ac);color:#120f00;border-color:var(--ac)}
+button.go:hover{background:var(--ac2)}
+button:disabled{opacity:.4;cursor:not-allowed}button.go:disabled:hover{background:var(--ac)}
+.link{background:none;border:none;color:var(--mu);padding:4px 2px;text-decoration:underline;text-underline-offset:3px}.link:hover{color:var(--tx)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bar{height:5px;border-radius:3px;background:#2f1f4a;overflow:hidden;margin-top:8px;visibility:hidden}
+.bar i{display:block;height:100%;width:35%;background:var(--ac);border-radius:3px;animation:s 1.2s ease-in-out infinite}
+@keyframes s{0%{margin-left:-35%}100%{margin-left:100%}}
+.busy .bar{visibility:visible}
+.spacer{flex:1;min-height:0}
+input[type=text]{width:100%;background:#0d0718;border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:8px 10px;font:inherit;margin:6px 0}
+footer{display:flex;justify-content:space-between;gap:12px;color:var(--mu);font-size:11px;margin-top:6px}
+footer span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%}
+@media(max-width:760px){body{grid-template-columns:1fr}.art{display:none}}
+#lang{position:absolute;top:14px;right:18px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit;font-size:12px;cursor:pointer;z-index:5}
+.main{position:relative}
+[dir=rtl] #lang{right:auto;left:18px}
+</style></head><body>
+<div class="art"><img src="/api/banner.jpg" alt=""></div>
+<div class="main">
+ <select id="lang" aria-label="Language"></select>
+ <div class="eyebrow">Cyberpunk 2077</div>
+ <h1 id="h1">Menu<span> Music</span></h1>
+ <div id="status"><p class="lead" id="lead" data-i="lead_cp">Replaces <b>only the main-menu music</b> with your own song. No game files are modified – it adds one small mod file that you can remove at any time.</p><div id="msg"></div></div>
+
+ <div class="card" id="setup" style="display:none">
+  <div class="lbl" data-i="setup_title">Game not found</div>
+  <span data-i="path_cp">Path to the game folder (the one that contains “archive” and “bin”):</span>
+  <input type="text" id="path" placeholder="C:\Program Files (x86)\Steam\steamapps\common\Cyberpunk 2077">
+  <button id="setdir" class="go" style="padding:9px" data-i="use_folder">Use this folder</button>
+ </div>
+
+ <div class="card">
+  <div class="lbl" data-i="now">Currently in the main menu</div>
+  <div class="now" id="now">
+   <div class="disc"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0a0612" stroke="#4a3470" stroke-width="2"/><circle cx="32" cy="32" r="22" fill="none" stroke="#2f1f4a"/><circle cx="32" cy="32" r="15" fill="none" stroke="#2f1f4a"/><circle cx="32" cy="32" r="10" fill="#fcee0a"/><circle cx="32" cy="32" r="2.5" fill="#0a0612"/><path d="M32 2a30 30 0 0 1 21 9" stroke="#fff3" stroke-width="2" fill="none"/></svg></div>
+   <div><b id="nowt" data-i="looking">Looking for the game …</b><small id="nows"></small></div>
+   <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="listen"><select id="vsel"><option value="0" data-t="1">Track 1</option><option value="1" data-t="2">Track 2</option><option value="2" data-t="3">Track 3</option></select><button id="lbtn" disabled data-i="listen">▶ Listen to current menu track</button><audio id="caud" controls></audio></div><div class="fmeta" style="margin-top:6px" data-i="cp_note">The game picks one of three menu tracks (1:44 – 6:00) depending on the situation. All three are replaced.</div>
+ </div>
+
+ <div class="card song">
+  <div class="lbl" data-i="your_song">Your song</div>
+  <div class="drop" id="drop">
+   <svg viewBox="0 0 64 64" fill="none" stroke="#fcee0a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M24 46V16l26-6v30"/><circle cx="17" cy="46" r="7" fill="#fcee0a22"/><circle cx="43" cy="40" r="7" fill="#fcee0a22"/></svg>
+   <big data-i="drop">Drop an MP3 or WAV here</big><span data-i="browse">or click to browse</span>
+  </div>
+  <input type="file" id="file" accept=".mp3,.wav,audio/mpeg,audio/wav" style="display:none">
+  <div class="file" id="fi">
+   <div class="row"><div><div class="fname" id="fn"></div><div class="fmeta" id="fm"></div></div><button class="link" id="other" data-i="other">choose another</button></div>
+   <audio id="aud" controls></audio>
+  </div>
+  <div class="chips"><span data-i="c1">Any length</span><span data-i="c2">No silence needed</span><span data-i="c3">Seamless loop</span></div>
+ </div>
+
+ <button class="go" id="go" disabled data-i="go">Set as menu music</button>
+ <div class="bar"><i></i></div>
+ <div class="fmeta" id="prog" style="margin-top:4px;min-height:16px"></div>
+ <div class="spacer"></div>
+ <div class="row"><button class="link" id="restore" data-i="restore_cp">Remove mod / restore original</button><button class="link" id="quit" data-i="quit">Quit</button></div>
+ <footer><span id="game"></span><span data-i="foot_cp">Remove the mod file to go back to the original</span></footer>
+</div>
+<script>
+const I18N={
+en:{name:"English",h1a:"Menu",h1b:" Music",
+lead_cp:"Replaces <b>only the main-menu music</b> with your own song. No game files are modified – it adds one small mod file that you can remove at any time.",
+lead_ark:"Replaces <b>only the main-menu music</b> with your own song. Nothing else in the game is touched.",
+setup_title:"Game not found",path_cp:"Path to the game folder (the one that contains “archive” and “bin”):",path_ark:"Path to the game folder (the one that contains “BmGame”):",use_folder:"Use this folder",
+now:"Currently in the main menu",looking:"Looking for the game …",track:"Track {n}",listen:"▶ Listen to current menu track",loading:"Loading …",again:"▶ Play again from start",
+cp_note:"The game picks one of three menu tracks (1:44 – 6:00) depending on the situation. All three are replaced.",
+your_song:"Your song",drop:"Drop an MP3 or WAV here",browse:"or click to browse",other:"choose another",c1:"Any length",c2:"No silence needed",c3:"Seamless loop",
+go:"Set as menu music",restore_cp:"Remove mod / restore original",restore_ark:"Restore original music",quit:"Quit",
+foot_cp:"Remove the mod file to go back to the original",foot_ark:"Original is backed up automatically",
+conf:"Heads-up: other mods also replace this music ({list}). Rename our file or remove them if you hear no change.",
+custom:"Custom: {s}",len_cp:"Length {t} · loop adjusted · mod active",len_ark:"Length {t} · loop adjusted",
+legacy_t:"Custom (old tool): {s}",legacy_s:"Length/loop not adjusted yet – apply again",
+orig:"Original music",unch_cp:"unchanged (no mod installed)",unch_ark:"unchanged",nogame:"No game found",
+pick_err:"Please choose an MP3 or WAV file.",play_err:"Could not play the current track: {e}",starting:"Starting …",
+done_cp:"Done! Your song ({t}) is now the menu music. Restart the game completely, then open the main menu.",
+done_ark:"Done! Your song ({t}) is now the menu music. Start the game and open the main menu.",
+err:"Error: {e}",confirm:"Restore the original menu music?",restored:"The original music has been restored.",closed:"Closed. You can close this tab.",
+locating:"Locating the menu music in the game files …",
+p_check:"Checking game data …",p_bank:"Reading the original sound bank …",p_read:"Reading music …",
+p_conv:"Converting {m}:{s} of music to the game format – this can take {a}–{b} minutes …",
+p_adjust:"Adjusting length and loop …",p_write:"Writing music into the game files …",p_mod:"Writing the mod file …",p_done:"Done."},
+de:{name:"Deutsch",h1a:"Menü",h1b:"musik",
+lead_cp:"Ersetzt <b>nur die Hauptmenü-Musik</b> durch deinen eigenen Song. Es werden keine Spieldateien verändert – es wird nur eine kleine Mod-Datei hinzugefügt, die du jederzeit entfernen kannst.",
+lead_ark:"Ersetzt <b>nur die Hauptmenü-Musik</b> durch deinen eigenen Song. Sonst wird nichts im Spiel angefasst.",
+setup_title:"Spiel nicht gefunden",path_cp:"Pfad zum Spielordner (der, in dem „archive“ und „bin“ liegen):",path_ark:"Pfad zum Spielordner (der, in dem „BmGame“ liegt):",use_folder:"Diesen Ordner verwenden",
+now:"Aktuell im Hauptmenü",looking:"Suche das Spiel …",track:"Titel {n}",listen:"▶ Aktuellen Menü-Titel anhören",loading:"Lädt …",again:"▶ Von vorn abspielen",
+cp_note:"Das Spiel wählt je nach Situation einen von drei Menü-Titeln (1:44 – 6:00). Alle drei werden ersetzt.",
+your_song:"Dein Song",drop:"MP3 oder WAV hier ablegen",browse:"oder klicken zum Auswählen",other:"anderen wählen",c1:"Beliebige Länge",c2:"Keine Stille nötig",c3:"Nahtlose Schleife",
+go:"Als Menümusik setzen",restore_cp:"Mod entfernen / Original wiederherstellen",restore_ark:"Originalmusik wiederherstellen",quit:"Beenden",
+foot_cp:"Mod-Datei entfernen, um zum Original zurückzukehren",foot_ark:"Das Original wird automatisch gesichert",
+conf:"Hinweis: Andere Mods ersetzen diese Musik ebenfalls ({list}). Benenne unsere Datei um oder entferne sie, falls du keine Änderung hörst.",
+custom:"Eigener Song: {s}",len_cp:"Länge {t} · Schleife angepasst · Mod aktiv",len_ark:"Länge {t} · Schleife angepasst",
+legacy_t:"Eigener Song (altes Tool): {s}",legacy_s:"Länge/Schleife noch nicht angepasst – bitte erneut anwenden",
+orig:"Originalmusik",unch_cp:"unverändert (keine Mod installiert)",unch_ark:"unverändert",nogame:"Kein Spiel gefunden",
+pick_err:"Bitte eine MP3- oder WAV-Datei wählen.",play_err:"Der aktuelle Titel konnte nicht abgespielt werden: {e}",starting:"Starte …",
+done_cp:"Fertig! Dein Song ({t}) ist jetzt die Menümusik. Starte das Spiel komplett neu und öffne dann das Hauptmenü.",
+done_ark:"Fertig! Dein Song ({t}) ist jetzt die Menümusik. Starte das Spiel und öffne das Hauptmenü.",
+err:"Fehler: {e}",confirm:"Originale Menümusik wiederherstellen?",restored:"Die Originalmusik wurde wiederhergestellt.",closed:"Geschlossen. Du kannst diesen Tab schließen.",
+locating:"Suche die Menümusik in den Spieldateien …",
+p_check:"Prüfe Spieldaten …",p_bank:"Lese die originale Sound-Bank …",p_read:"Lese Musik …",
+p_conv:"Wandle {m}:{s} Musik ins Spielformat um – das kann {a}–{b} Minuten dauern …",
+p_adjust:"Passe Länge und Schleife an …",p_write:"Schreibe Musik in die Spieldateien …",p_mod:"Schreibe die Mod-Datei …",p_done:"Fertig."},
+fr:{name:"Français",h1a:"Musique",h1b:" du menu",
+lead_cp:"Remplace <b>uniquement la musique du menu principal</b> par votre propre morceau. Aucun fichier du jeu n’est modifié : un petit fichier de mod est ajouté, que vous pouvez retirer à tout moment.",
+lead_ark:"Remplace <b>uniquement la musique du menu principal</b> par votre propre morceau. Rien d’autre dans le jeu n’est touché.",
+setup_title:"Jeu introuvable",path_cp:"Chemin du dossier du jeu (celui qui contient « archive » et « bin ») :",path_ark:"Chemin du dossier du jeu (celui qui contient « BmGame ») :",use_folder:"Utiliser ce dossier",
+now:"Actuellement dans le menu principal",looking:"Recherche du jeu …",track:"Piste {n}",listen:"▶ Écouter la piste actuelle du menu",loading:"Chargement …",again:"▶ Rejouer depuis le début",
+cp_note:"Le jeu choisit l’une des trois pistes du menu (1:44 – 6:00) selon la situation. Les trois sont remplacées.",
+your_song:"Votre morceau",drop:"Déposez un MP3 ou WAV ici",browse:"ou cliquez pour parcourir",other:"en choisir un autre",c1:"Toute durée",c2:"Pas de silence requis",c3:"Boucle sans coupure",
+go:"Définir comme musique du menu",restore_cp:"Retirer le mod / restaurer l’original",restore_ark:"Restaurer la musique d’origine",quit:"Quitter",
+foot_cp:"Supprimez le fichier du mod pour revenir à l’original",foot_ark:"L’original est sauvegardé automatiquement",
+conf:"Attention : d’autres mods remplacent aussi cette musique ({list}). Renommez notre fichier ou retirez-les si vous n’entendez aucun changement.",
+custom:"Personnalisé : {s}",len_cp:"Durée {t} · boucle ajustée · mod actif",len_ark:"Durée {t} · boucle ajustée",
+legacy_t:"Personnalisé (ancien outil) : {s}",legacy_s:"Durée/boucle pas encore ajustées – appliquez à nouveau",
+orig:"Musique d’origine",unch_cp:"inchangée (aucun mod installé)",unch_ark:"inchangée",nogame:"Aucun jeu trouvé",
+pick_err:"Veuillez choisir un fichier MP3 ou WAV.",play_err:"Impossible de lire la piste actuelle : {e}",starting:"Démarrage …",
+done_cp:"Terminé ! Votre morceau ({t}) est maintenant la musique du menu. Redémarrez complètement le jeu, puis ouvrez le menu principal.",
+done_ark:"Terminé ! Votre morceau ({t}) est maintenant la musique du menu. Lancez le jeu et ouvrez le menu principal.",
+err:"Erreur : {e}",confirm:"Restaurer la musique d’origine du menu ?",restored:"La musique d’origine a été restaurée.",closed:"Fermé. Vous pouvez fermer cet onglet.",
+locating:"Recherche de la musique du menu dans les fichiers du jeu …",
+p_check:"Vérification des données du jeu …",p_bank:"Lecture de la banque sonore d’origine …",p_read:"Lecture de la musique …",
+p_conv:"Conversion de {m}:{s} de musique au format du jeu – cela peut prendre {a}–{b} minutes …",
+p_adjust:"Ajustement de la durée et de la boucle …",p_write:"Écriture de la musique dans les fichiers du jeu …",p_mod:"Écriture du fichier du mod …",p_done:"Terminé."},
+es:{name:"Español",h1a:"Música",h1b:" del menú",
+lead_cp:"Reemplaza <b>solo la música del menú principal</b> por tu propia canción. No se modifica ningún archivo del juego: solo se añade un pequeño archivo de mod que puedes quitar en cualquier momento.",
+lead_ark:"Reemplaza <b>solo la música del menú principal</b> por tu propia canción. No se toca nada más del juego.",
+setup_title:"Juego no encontrado",path_cp:"Ruta de la carpeta del juego (la que contiene «archive» y «bin»):",path_ark:"Ruta de la carpeta del juego (la que contiene «BmGame»):",use_folder:"Usar esta carpeta",
+now:"Actualmente en el menú principal",looking:"Buscando el juego …",track:"Pista {n}",listen:"▶ Escuchar la pista actual del menú",loading:"Cargando …",again:"▶ Reproducir desde el principio",
+cp_note:"El juego elige una de tres pistas de menú (1:44 – 6:00) según la situación. Se reemplazan las tres.",
+your_song:"Tu canción",drop:"Suelta aquí un MP3 o WAV",browse:"o haz clic para buscar",other:"elegir otra",c1:"Cualquier duración",c2:"No hace falta silencio",c3:"Bucle continuo",
+go:"Usar como música del menú",restore_cp:"Quitar el mod / restaurar el original",restore_ark:"Restaurar música original",quit:"Salir",
+foot_cp:"Elimina el archivo del mod para volver al original",foot_ark:"El original se guarda automáticamente",
+conf:"Aviso: otros mods también reemplazan esta música ({list}). Cambia el nombre de nuestro archivo o quítalos si no oyes cambios.",
+custom:"Personalizada: {s}",len_cp:"Duración {t} · bucle ajustado · mod activo",len_ark:"Duración {t} · bucle ajustado",
+legacy_t:"Personalizada (herramienta antigua): {s}",legacy_s:"Duración/bucle aún sin ajustar: vuelve a aplicar",
+orig:"Música original",unch_cp:"sin cambios (ningún mod instalado)",unch_ark:"sin cambios",nogame:"No se encontró el juego",
+pick_err:"Elige un archivo MP3 o WAV.",play_err:"No se pudo reproducir la pista actual: {e}",starting:"Iniciando …",
+done_cp:"¡Listo! Tu canción ({t}) es ahora la música del menú. Reinicia el juego por completo y abre el menú principal.",
+done_ark:"¡Listo! Tu canción ({t}) es ahora la música del menú. Inicia el juego y abre el menú principal.",
+err:"Error: {e}",confirm:"¿Restaurar la música original del menú?",restored:"Se ha restaurado la música original.",closed:"Cerrado. Puedes cerrar esta pestaña.",
+locating:"Buscando la música del menú en los archivos del juego …",
+p_check:"Comprobando los datos del juego …",p_bank:"Leyendo el banco de sonido original …",p_read:"Leyendo la música …",
+p_conv:"Convirtiendo {m}:{s} de música al formato del juego (puede tardar {a}–{b} minutos) …",
+p_adjust:"Ajustando duración y bucle …",p_write:"Escribiendo la música en los archivos del juego …",p_mod:"Escribiendo el archivo del mod …",p_done:"Listo."},
+it:{name:"Italiano",h1a:"Musica",h1b:" del menu",
+lead_cp:"Sostituisce <b>solo la musica del menu principale</b> con una tua canzone. Nessun file del gioco viene modificato: viene aggiunto solo un piccolo file mod che puoi rimuovere in qualsiasi momento.",
+lead_ark:"Sostituisce <b>solo la musica del menu principale</b> con una tua canzone. Nient’altro nel gioco viene toccato.",
+setup_title:"Gioco non trovato",path_cp:"Percorso della cartella del gioco (quella che contiene «archive» e «bin»):",path_ark:"Percorso della cartella del gioco (quella che contiene «BmGame»):",use_folder:"Usa questa cartella",
+now:"Attualmente nel menu principale",looking:"Ricerca del gioco …",track:"Traccia {n}",listen:"▶ Ascolta la traccia attuale del menu",loading:"Caricamento …",again:"▶ Riproduci dall’inizio",
+cp_note:"Il gioco sceglie una di tre tracce del menu (1:44 – 6:00) a seconda della situazione. Tutte e tre vengono sostituite.",
+your_song:"La tua canzone",drop:"Trascina qui un MP3 o WAV",browse:"o clicca per sfogliare",other:"sceglierne un’altra",c1:"Qualsiasi durata",c2:"Nessun silenzio necessario",c3:"Loop senza interruzioni",
+go:"Imposta come musica del menu",restore_cp:"Rimuovi mod / ripristina originale",restore_ark:"Ripristina musica originale",quit:"Esci",
+foot_cp:"Elimina il file della mod per tornare all’originale",foot_ark:"L’originale viene salvato automaticamente",
+conf:"Attenzione: anche altre mod sostituiscono questa musica ({list}). Rinomina il nostro file o rimuovile se non senti cambiamenti.",
+custom:"Personalizzata: {s}",len_cp:"Durata {t} · loop regolato · mod attiva",len_ark:"Durata {t} · loop regolato",
+legacy_t:"Personalizzata (vecchio strumento): {s}",legacy_s:"Durata/loop non ancora regolati: applica di nuovo",
+orig:"Musica originale",unch_cp:"invariata (nessuna mod installata)",unch_ark:"invariata",nogame:"Nessun gioco trovato",
+pick_err:"Scegli un file MP3 o WAV.",play_err:"Impossibile riprodurre la traccia attuale: {e}",starting:"Avvio …",
+done_cp:"Fatto! La tua canzone ({t}) è ora la musica del menu. Riavvia completamente il gioco e apri il menu principale.",
+done_ark:"Fatto! La tua canzone ({t}) è ora la musica del menu. Avvia il gioco e apri il menu principale.",
+err:"Errore: {e}",confirm:"Ripristinare la musica originale del menu?",restored:"La musica originale è stata ripristinata.",closed:"Chiuso. Puoi chiudere questa scheda.",
+locating:"Ricerca della musica del menu nei file del gioco …",
+p_check:"Controllo dei dati del gioco …",p_bank:"Lettura del banco audio originale …",p_read:"Lettura della musica …",
+p_conv:"Conversione di {m}:{s} di musica nel formato del gioco – può richiedere {a}–{b} minuti …",
+p_adjust:"Regolazione di durata e loop …",p_write:"Scrittura della musica nei file del gioco …",p_mod:"Scrittura del file della mod …",p_done:"Fatto."},
+"pt-BR":{name:"Português (Brasil)",h1a:"Música",h1b:" do menu",
+lead_cp:"Substitui <b>apenas a música do menu principal</b> pela sua própria música. Nenhum arquivo do jogo é modificado – é adicionado apenas um pequeno arquivo de mod que você pode remover quando quiser.",
+lead_ark:"Substitui <b>apenas a música do menu principal</b> pela sua própria música. Nada mais no jogo é alterado.",
+setup_title:"Jogo não encontrado",path_cp:"Caminho da pasta do jogo (a que contém “archive” e “bin”):",path_ark:"Caminho da pasta do jogo (a que contém “BmGame”):",use_folder:"Usar esta pasta",
+now:"Atualmente no menu principal",looking:"Procurando o jogo …",track:"Faixa {n}",listen:"▶ Ouvir a faixa atual do menu",loading:"Carregando …",again:"▶ Tocar novamente do início",
+cp_note:"O jogo escolhe uma de três faixas de menu (1:44 – 6:00) conforme a situação. As três são substituídas.",
+your_song:"Sua música",drop:"Solte um MP3 ou WAV aqui",browse:"ou clique para procurar",other:"escolher outra",c1:"Qualquer duração",c2:"Sem necessidade de silêncio",c3:"Loop contínuo",
+go:"Definir como música do menu",restore_cp:"Remover mod / restaurar original",restore_ark:"Restaurar música original",quit:"Sair",
+foot_cp:"Remova o arquivo do mod para voltar ao original",foot_ark:"O original é salvo automaticamente",
+conf:"Aviso: outros mods também substituem esta música ({list}). Renomeie nosso arquivo ou remova-os se não notar mudança.",
+custom:"Personalizada: {s}",len_cp:"Duração {t} · loop ajustado · mod ativo",len_ark:"Duração {t} · loop ajustado",
+legacy_t:"Personalizada (ferramenta antiga): {s}",legacy_s:"Duração/loop ainda não ajustados – aplique novamente",
+orig:"Música original",unch_cp:"inalterada (nenhum mod instalado)",unch_ark:"inalterada",nogame:"Nenhum jogo encontrado",
+pick_err:"Escolha um arquivo MP3 ou WAV.",play_err:"Não foi possível tocar a faixa atual: {e}",starting:"Iniciando …",
+done_cp:"Pronto! Sua música ({t}) agora é a música do menu. Reinicie o jogo completamente e abra o menu principal.",
+done_ark:"Pronto! Sua música ({t}) agora é a música do menu. Inicie o jogo e abra o menu principal.",
+err:"Erro: {e}",confirm:"Restaurar a música original do menu?",restored:"A música original foi restaurada.",closed:"Fechado. Você pode fechar esta guia.",
+locating:"Localizando a música do menu nos arquivos do jogo …",
+p_check:"Verificando os dados do jogo …",p_bank:"Lendo o banco de som original …",p_read:"Lendo a música …",
+p_conv:"Convertendo {m}:{s} de música para o formato do jogo – pode levar {a}–{b} minutos …",
+p_adjust:"Ajustando duração e loop …",p_write:"Gravando a música nos arquivos do jogo …",p_mod:"Gravando o arquivo do mod …",p_done:"Pronto."},
+pl:{name:"Polski",h1a:"Muzyka",h1b:" menu",
+lead_cp:"Zastępuje <b>tylko muzykę w menu głównym</b> Twoim własnym utworem. Żadne pliki gry nie są zmieniane – dodawany jest jeden mały plik moda, który możesz w każdej chwili usunąć.",
+lead_ark:"Zastępuje <b>tylko muzykę w menu głównym</b> Twoim własnym utworem. Nic więcej w grze nie jest ruszane.",
+setup_title:"Nie znaleziono gry",path_cp:"Ścieżka do folderu gry (tego, który zawiera „archive” i „bin”):",path_ark:"Ścieżka do folderu gry (tego, który zawiera „BmGame”):",use_folder:"Użyj tego folderu",
+now:"Obecnie w menu głównym",looking:"Szukanie gry …",track:"Utwór {n}",listen:"▶ Posłuchaj bieżącego utworu menu",loading:"Wczytywanie …",again:"▶ Odtwórz od początku",
+cp_note:"Gra wybiera jeden z trzech utworów menu (1:44 – 6:00) zależnie od sytuacji. Wszystkie trzy są zastępowane.",
+your_song:"Twój utwór",drop:"Upuść tutaj plik MP3 lub WAV",browse:"lub kliknij, aby wybrać",other:"wybierz inny",c1:"Dowolna długość",c2:"Cisza niepotrzebna",c3:"Płynna pętla",
+go:"Ustaw jako muzykę menu",restore_cp:"Usuń moda / przywróć oryginał",restore_ark:"Przywróć oryginalną muzykę",quit:"Zamknij",
+foot_cp:"Usuń plik moda, aby wrócić do oryginału",foot_ark:"Oryginał jest automatycznie zapisywany",
+conf:"Uwaga: inne mody też zastępują tę muzykę ({list}). Zmień nazwę naszego pliku lub usuń je, jeśli nie słyszysz zmiany.",
+custom:"Własny: {s}",len_cp:"Długość {t} · pętla dopasowana · mod aktywny",len_ark:"Długość {t} · pętla dopasowana",
+legacy_t:"Własny (stare narzędzie): {s}",legacy_s:"Długość/pętla jeszcze niedopasowane – zastosuj ponownie",
+orig:"Oryginalna muzyka",unch_cp:"bez zmian (mod niezainstalowany)",unch_ark:"bez zmian",nogame:"Nie znaleziono gry",
+pick_err:"Wybierz plik MP3 lub WAV.",play_err:"Nie można odtworzyć bieżącego utworu: {e}",starting:"Uruchamianie …",
+done_cp:"Gotowe! Twój utwór ({t}) jest teraz muzyką menu. Całkowicie uruchom grę ponownie, a następnie otwórz menu główne.",
+done_ark:"Gotowe! Twój utwór ({t}) jest teraz muzyką menu. Uruchom grę i otwórz menu główne.",
+err:"Błąd: {e}",confirm:"Przywrócić oryginalną muzykę menu?",restored:"Przywrócono oryginalną muzykę.",closed:"Zamknięto. Możesz zamknąć tę kartę.",
+locating:"Szukanie muzyki menu w plikach gry …",
+p_check:"Sprawdzanie danych gry …",p_bank:"Wczytywanie oryginalnego banku dźwięku …",p_read:"Wczytywanie muzyki …",
+p_conv:"Konwersja {m}:{s} muzyki do formatu gry – może to potrwać {a}–{b} min …",
+p_adjust:"Dopasowywanie długości i pętli …",p_write:"Zapisywanie muzyki w plikach gry …",p_mod:"Zapisywanie pliku moda …",p_done:"Gotowe."},
+ru:{name:"Русский",h1a:"Музыка",h1b:" меню",
+lead_cp:"Заменяет <b>только музыку главного меню</b> вашей собственной песней. Файлы игры не изменяются – добавляется один небольшой файл мода, который можно удалить в любой момент.",
+lead_ark:"Заменяет <b>только музыку главного меню</b> вашей собственной песней. Больше ничего в игре не затрагивается.",
+setup_title:"Игра не найдена",path_cp:"Путь к папке игры (в которой находятся «archive» и «bin»):",path_ark:"Путь к папке игры (в которой находится «BmGame»):",use_folder:"Использовать эту папку",
+now:"Сейчас в главном меню",looking:"Поиск игры …",track:"Трек {n}",listen:"▶ Послушать текущий трек меню",loading:"Загрузка …",again:"▶ Воспроизвести с начала",
+cp_note:"Игра выбирает один из трёх треков меню (1:44 – 6:00) в зависимости от ситуации. Заменяются все три.",
+your_song:"Ваша песня",drop:"Перетащите сюда MP3 или WAV",browse:"или нажмите для выбора",other:"выбрать другой",c1:"Любая длина",c2:"Тишина не нужна",c3:"Бесшовный цикл",
+go:"Установить как музыку меню",restore_cp:"Удалить мод / вернуть оригинал",restore_ark:"Вернуть оригинальную музыку",quit:"Выход",
+foot_cp:"Удалите файл мода, чтобы вернуться к оригиналу",foot_ark:"Оригинал сохраняется автоматически",
+conf:"Внимание: эту музыку заменяют и другие моды ({list}). Если не слышите изменений, переименуйте наш файл или удалите их.",
+custom:"Своя: {s}",len_cp:"Длительность {t} · цикл настроен · мод активен",len_ark:"Длительность {t} · цикл настроен",
+legacy_t:"Своя (старая версия утилиты): {s}",legacy_s:"Длительность/цикл ещё не настроены – примените снова",
+orig:"Оригинальная музыка",unch_cp:"без изменений (мод не установлен)",unch_ark:"без изменений",nogame:"Игра не найдена",
+pick_err:"Выберите файл MP3 или WAV.",play_err:"Не удалось воспроизвести текущий трек: {e}",starting:"Запуск …",
+done_cp:"Готово! Ваша песня ({t}) теперь музыка меню. Полностью перезапустите игру и откройте главное меню.",
+done_ark:"Готово! Ваша песня ({t}) теперь музыка меню. Запустите игру и откройте главное меню.",
+err:"Ошибка: {e}",confirm:"Вернуть оригинальную музыку меню?",restored:"Оригинальная музыка восстановлена.",closed:"Закрыто. Эту вкладку можно закрыть.",
+locating:"Поиск музыки меню в файлах игры …",
+p_check:"Проверка данных игры …",p_bank:"Чтение оригинального звукового банка …",p_read:"Чтение музыки …",
+p_conv:"Преобразование {m}:{s} музыки в формат игры – это может занять {a}–{b} мин …",
+p_adjust:"Настройка длины и цикла …",p_write:"Запись музыки в файлы игры …",p_mod:"Запись файла мода …",p_done:"Готово."},
+uk:{name:"Українська",h1a:"Музика",h1b:" меню",
+lead_cp:"Замінює <b>лише музику головного меню</b> вашою власною піснею. Файли гри не змінюються – додається один невеликий файл мода, який можна видалити будь-коли.",
+lead_ark:"Замінює <b>лише музику головного меню</b> вашою власною піснею. Більше нічого в грі не чіпається.",
+setup_title:"Гру не знайдено",path_cp:"Шлях до теки гри (у якій є «archive» та «bin»):",path_ark:"Шлях до теки гри (у якій є «BmGame»):",use_folder:"Використати цю теку",
+now:"Зараз у головному меню",looking:"Пошук гри …",track:"Трек {n}",listen:"▶ Послухати поточний трек меню",loading:"Завантаження …",again:"▶ Відтворити спочатку",
+cp_note:"Гра обирає один із трьох треків меню (1:44 – 6:00) залежно від ситуації. Замінюються всі три.",
+your_song:"Ваша пісня",drop:"Перетягніть сюди MP3 або WAV",browse:"або натисніть, щоб вибрати",other:"вибрати іншу",c1:"Будь-яка тривалість",c2:"Тиша не потрібна",c3:"Безшовний цикл",
+go:"Встановити як музику меню",restore_cp:"Видалити мод / відновити оригінал",restore_ark:"Відновити оригінальну музику",quit:"Вихід",
+foot_cp:"Видаліть файл мода, щоб повернутися до оригіналу",foot_ark:"Оригінал зберігається автоматично",
+conf:"Увага: цю музику замінюють також інші моди ({list}). Якщо не чуєте змін, перейменуйте наш файл або видаліть їх.",
+custom:"Власна: {s}",len_cp:"Тривалість {t} · цикл налаштовано · мод активний",len_ark:"Тривалість {t} · цикл налаштовано",
+legacy_t:"Власна (стара версія утиліти): {s}",legacy_s:"Тривалість/цикл ще не налаштовано – застосуйте знову",
+orig:"Оригінальна музика",unch_cp:"без змін (мод не встановлено)",unch_ark:"без змін",nogame:"Гру не знайдено",
+pick_err:"Виберіть файл MP3 або WAV.",play_err:"Не вдалося відтворити поточний трек: {e}",starting:"Запуск …",
+done_cp:"Готово! Ваша пісня ({t}) тепер музика меню. Повністю перезапустіть гру та відкрийте головне меню.",
+done_ark:"Готово! Ваша пісня ({t}) тепер музика меню. Запустіть гру та відкрийте головне меню.",
+err:"Помилка: {e}",confirm:"Відновити оригінальну музику меню?",restored:"Оригінальну музику відновлено.",closed:"Закрито. Цю вкладку можна закрити.",
+locating:"Пошук музики меню у файлах гри …",
+p_check:"Перевірка даних гри …",p_bank:"Читання оригінального звукового банку …",p_read:"Читання музики …",
+p_conv:"Перетворення {m}:{s} музики у формат гри – це може тривати {a}–{b} хв …",
+p_adjust:"Налаштування тривалості та циклу …",p_write:"Запис музики у файли гри …",p_mod:"Запис файлу мода …",p_done:"Готово."},
+tr:{name:"Türkçe",h1a:"Menü",h1b:" Müziği",
+lead_cp:"<b>Yalnızca ana menü müziğini</b> kendi şarkınla değiştirir. Hiçbir oyun dosyası değiştirilmez – istediğin zaman kaldırabileceğin küçük bir mod dosyası eklenir.",
+lead_ark:"<b>Yalnızca ana menü müziğini</b> kendi şarkınla değiştirir. Oyunda başka hiçbir şeye dokunulmaz.",
+setup_title:"Oyun bulunamadı",path_cp:"Oyun klasörünün yolu (“archive” ve “bin” içeren klasör):",path_ark:"Oyun klasörünün yolu (“BmGame” içeren klasör):",use_folder:"Bu klasörü kullan",
+now:"Şu anda ana menüde",looking:"Oyun aranıyor …",track:"Parça {n}",listen:"▶ Mevcut menü parçasını dinle",loading:"Yükleniyor …",again:"▶ Baştan tekrar çal",
+cp_note:"Oyun, duruma göre üç menü parçasından birini seçer (1:44 – 6:00). Üçü de değiştirilir.",
+your_song:"Şarkın",drop:"Buraya bir MP3 veya WAV bırak",browse:"veya göz atmak için tıkla",other:"başka seç",c1:"Her uzunluk",c2:"Sessizlik gerekmez",c3:"Kesintisiz döngü",
+go:"Menü müziği olarak ayarla",restore_cp:"Modu kaldır / orijinali geri yükle",restore_ark:"Orijinal müziği geri yükle",quit:"Çıkış",
+foot_cp:"Orijinale dönmek için mod dosyasını sil",foot_ark:"Orijinal otomatik olarak yedeklenir",
+conf:"Uyarı: Başka modlar da bu müziği değiştiriyor ({list}). Değişiklik duymazsan dosyamızı yeniden adlandır veya onları kaldır.",
+custom:"Özel: {s}",len_cp:"Süre {t} · döngü ayarlandı · mod etkin",len_ark:"Süre {t} · döngü ayarlandı",
+legacy_t:"Özel (eski araç): {s}",legacy_s:"Süre/döngü henüz ayarlanmadı – yeniden uygula",
+orig:"Orijinal müzik",unch_cp:"değişmedi (mod yüklü değil)",unch_ark:"değişmedi",nogame:"Oyun bulunamadı",
+pick_err:"Lütfen bir MP3 veya WAV dosyası seç.",play_err:"Mevcut parça çalınamadı: {e}",starting:"Başlatılıyor …",
+done_cp:"Tamam! Şarkın ({t}) artık menü müziği. Oyunu tamamen yeniden başlat, sonra ana menüyü aç.",
+done_ark:"Tamam! Şarkın ({t}) artık menü müziği. Oyunu başlat ve ana menüyü aç.",
+err:"Hata: {e}",confirm:"Orijinal menü müziği geri yüklensin mi?",restored:"Orijinal müzik geri yüklendi.",closed:"Kapatıldı. Bu sekmeyi kapatabilirsin.",
+locating:"Menü müziği oyun dosyalarında aranıyor …",
+p_check:"Oyun verileri kontrol ediliyor …",p_bank:"Orijinal ses bankası okunuyor …",p_read:"Müzik okunuyor …",
+p_conv:"{m}:{s} müzik oyun biçimine dönüştürülüyor – {a}–{b} dakika sürebilir …",
+p_adjust:"Uzunluk ve döngü ayarlanıyor …",p_write:"Müzik oyun dosyalarına yazılıyor …",p_mod:"Mod dosyası yazılıyor …",p_done:"Tamam."},
+cs:{name:"Čeština",h1a:"Hudba",h1b:" menu",
+lead_cp:"Nahradí <b>pouze hudbu v hlavním menu</b> vaší vlastní písní. Žádné soubory hry se nemění – přidá se jen jeden malý soubor modu, který můžete kdykoli odstranit.",
+lead_ark:"Nahradí <b>pouze hudbu v hlavním menu</b> vaší vlastní písní. Ničeho jiného ve hře se nedotkne.",
+setup_title:"Hra nenalezena",path_cp:"Cesta ke složce hry (té, která obsahuje „archive“ a „bin“):",path_ark:"Cesta ke složce hry (té, která obsahuje „BmGame“):",use_folder:"Použít tuto složku",
+now:"Aktuálně v hlavním menu",looking:"Hledání hry …",track:"Skladba {n}",listen:"▶ Poslechnout aktuální skladbu menu",loading:"Načítání …",again:"▶ Přehrát znovu od začátku",
+cp_note:"Hra podle situace vybírá jednu ze tří skladeb menu (1:44 – 6:00). Nahrazeny jsou všechny tři.",
+your_song:"Vaše píseň",drop:"Přetáhněte sem MP3 nebo WAV",browse:"nebo klikněte pro výběr",other:"vybrat jinou",c1:"Libovolná délka",c2:"Ticho není potřeba",c3:"Plynulá smyčka",
+go:"Nastavit jako hudbu menu",restore_cp:"Odstranit mod / obnovit originál",restore_ark:"Obnovit původní hudbu",quit:"Ukončit",
+foot_cp:"Smažte soubor modu a vrátíte se k originálu",foot_ark:"Originál se zálohuje automaticky",
+conf:"Pozor: tuto hudbu nahrazují i jiné módy ({list}). Pokud neslyšíte změnu, přejmenujte náš soubor nebo je odstraňte.",
+custom:"Vlastní: {s}",len_cp:"Délka {t} · smyčka upravena · mod aktivní",len_ark:"Délka {t} · smyčka upravena",
+legacy_t:"Vlastní (starý nástroj): {s}",legacy_s:"Délka/smyčka ještě neupravena – použijte znovu",
+orig:"Původní hudba",unch_cp:"beze změny (mod není nainstalován)",unch_ark:"beze změny",nogame:"Hra nenalezena",
+pick_err:"Vyberte soubor MP3 nebo WAV.",play_err:"Aktuální skladbu nelze přehrát: {e}",starting:"Spouštění …",
+done_cp:"Hotovo! Vaše píseň ({t}) je nyní hudbou menu. Hru úplně restartujte a otevřete hlavní menu.",
+done_ark:"Hotovo! Vaše píseň ({t}) je nyní hudbou menu. Spusťte hru a otevřete hlavní menu.",
+err:"Chyba: {e}",confirm:"Obnovit původní hudbu menu?",restored:"Původní hudba byla obnovena.",closed:"Zavřeno. Tuto kartu můžete zavřít.",
+locating:"Hledání hudby menu v souborech hry …",
+p_check:"Kontrola dat hry …",p_bank:"Čtení původní zvukové banky …",p_read:"Čtení hudby …",
+p_conv:"Převod {m}:{s} hudby do formátu hry – může to trvat {a}–{b} min …",
+p_adjust:"Úprava délky a smyčky …",p_write:"Zápis hudby do souborů hry …",p_mod:"Zápis souboru modu …",p_done:"Hotovo."},
+hu:{name:"Magyar",h1a:"Menü",h1b:"zene",
+lead_cp:"<b>Csak a főmenü zenéjét</b> cseréli le a saját dalodra. Nem módosít játékfájlokat – egyetlen kis modfájlt ad hozzá, amit bármikor eltávolíthatsz.",
+lead_ark:"<b>Csak a főmenü zenéjét</b> cseréli le a saját dalodra. A játékban semmi máshoz nem nyúl.",
+setup_title:"A játék nem található",path_cp:"A játék mappájának elérési útja (amelyik az „archive” és „bin” mappát tartalmazza):",path_ark:"A játék mappájának elérési útja (amelyik a „BmGame” mappát tartalmazza):",use_folder:"Ezen mappa használata",
+now:"Jelenleg a főmenüben",looking:"A játék keresése …",track:"{n}. szám",listen:"▶ Jelenlegi menüszám meghallgatása",loading:"Betöltés …",again:"▶ Lejátszás elölről",
+cp_note:"A játék a helyzettől függően a három menüszám egyikét választja (1:44 – 6:00). Mindhárom le lesz cserélve.",
+your_song:"A te dalod",drop:"Húzz ide egy MP3 vagy WAV fájlt",browse:"vagy kattints a tallózáshoz",other:"másik választása",c1:"Bármilyen hossz",c2:"Csend nem szükséges",c3:"Zökkenőmentes hurok",
+go:"Beállítás menüzenének",restore_cp:"Mod eltávolítása / eredeti visszaállítása",restore_ark:"Eredeti zene visszaállítása",quit:"Kilépés",
+foot_cp:"Töröld a modfájlt, hogy visszatérj az eredetihez",foot_ark:"Az eredetit automatikusan elmentjük",
+conf:"Figyelem: más modok is lecserélik ezt a zenét ({list}). Ha nem hallasz változást, nevezd át a fájlunkat vagy távolítsd el őket.",
+custom:"Egyéni: {s}",len_cp:"Hossz {t} · hurok beállítva · mod aktív",len_ark:"Hossz {t} · hurok beállítva",
+legacy_t:"Egyéni (régi eszköz): {s}",legacy_s:"A hossz/hurok még nincs beállítva – alkalmazd újra",
+orig:"Eredeti zene",unch_cp:"változatlan (nincs mod telepítve)",unch_ark:"változatlan",nogame:"Nem található játék",
+pick_err:"Válassz egy MP3 vagy WAV fájlt.",play_err:"A jelenlegi számot nem sikerült lejátszani: {e}",starting:"Indítás …",
+done_cp:"Kész! A dalod ({t}) mostantól a menüzene. Indítsd újra teljesen a játékot, majd nyisd meg a főmenüt.",
+done_ark:"Kész! A dalod ({t}) mostantól a menüzene. Indítsd el a játékot, és nyisd meg a főmenüt.",
+err:"Hiba: {e}",confirm:"Visszaállítod az eredeti menüzenét?",restored:"Az eredeti zene visszaállítva.",closed:"Bezárva. Ezt a lapot bezárhatod.",
+locating:"A menüzene keresése a játékfájlokban …",
+p_check:"Játékadatok ellenőrzése …",p_bank:"Az eredeti hangbank olvasása …",p_read:"Zene olvasása …",
+p_conv:"{m}:{s} zene átalakítása a játék formátumára – {a}–{b} percig tarthat …",
+p_adjust:"Hossz és hurok beállítása …",p_write:"Zene írása a játékfájlokba …",p_mod:"A modfájl írása …",p_done:"Kész."},
+nl:{name:"Nederlands",h1a:"Menu",h1b:"muziek",
+lead_cp:"Vervangt <b>alleen de muziek van het hoofdmenu</b> door je eigen nummer. Er worden geen spelbestanden aangepast – er wordt één klein modbestand toegevoegd dat je op elk moment kunt verwijderen.",
+lead_ark:"Vervangt <b>alleen de muziek van het hoofdmenu</b> door je eigen nummer. Verder wordt niets in het spel aangeraakt.",
+setup_title:"Spel niet gevonden",path_cp:"Pad naar de spelmap (de map met „archive” en „bin”):",path_ark:"Pad naar de spelmap (de map met „BmGame”):",use_folder:"Deze map gebruiken",
+now:"Momenteel in het hoofdmenu",looking:"Spel zoeken …",track:"Nummer {n}",listen:"▶ Huidig menunummer beluisteren",loading:"Laden …",again:"▶ Opnieuw afspelen vanaf begin",
+cp_note:"Het spel kiest afhankelijk van de situatie een van drie menunummers (1:44 – 6:00). Alle drie worden vervangen.",
+your_song:"Jouw nummer",drop:"Sleep hier een MP3 of WAV neer",browse:"of klik om te bladeren",other:"kies een ander",c1:"Elke lengte",c2:"Geen stilte nodig",c3:"Naadloze lus",
+go:"Instellen als menumuziek",restore_cp:"Mod verwijderen / origineel herstellen",restore_ark:"Originele muziek herstellen",quit:"Afsluiten",
+foot_cp:"Verwijder het modbestand om terug te gaan naar het origineel",foot_ark:"Het origineel wordt automatisch geback-upt",
+conf:"Let op: andere mods vervangen deze muziek ook ({list}). Hernoem ons bestand of verwijder ze als je geen verandering hoort.",
+custom:"Eigen: {s}",len_cp:"Lengte {t} · lus aangepast · mod actief",len_ark:"Lengte {t} · lus aangepast",
+legacy_t:"Eigen (oude tool): {s}",legacy_s:"Lengte/lus nog niet aangepast – pas opnieuw toe",
+orig:"Originele muziek",unch_cp:"ongewijzigd (geen mod geïnstalleerd)",unch_ark:"ongewijzigd",nogame:"Geen spel gevonden",
+pick_err:"Kies een MP3- of WAV-bestand.",play_err:"Het huidige nummer kon niet worden afgespeeld: {e}",starting:"Starten …",
+done_cp:"Klaar! Jouw nummer ({t}) is nu de menumuziek. Start het spel volledig opnieuw op en open het hoofdmenu.",
+done_ark:"Klaar! Jouw nummer ({t}) is nu de menumuziek. Start het spel en open het hoofdmenu.",
+err:"Fout: {e}",confirm:"De originele menumuziek herstellen?",restored:"De originele muziek is hersteld.",closed:"Gesloten. Je kunt dit tabblad sluiten.",
+locating:"Menumuziek zoeken in de spelbestanden …",
+p_check:"Spelgegevens controleren …",p_bank:"Originele geluidsbank lezen …",p_read:"Muziek lezen …",
+p_conv:"{m}:{s} muziek omzetten naar het spelformaat – dit kan {a}–{b} minuten duren …",
+p_adjust:"Lengte en lus aanpassen …",p_write:"Muziek naar de spelbestanden schrijven …",p_mod:"Modbestand schrijven …",p_done:"Klaar."},
+"zh-CN":{name:"简体中文",h1a:"菜单",h1b:"音乐",
+lead_cp:"仅将<b>主菜单音乐</b>替换为你自己的歌曲。不会修改任何游戏文件——只会添加一个小型 Mod 文件，你可以随时删除。",
+lead_ark:"仅将<b>主菜单音乐</b>替换为你自己的歌曲。游戏中的其他内容不会被改动。",
+setup_title:"未找到游戏",path_cp:"游戏文件夹路径（包含“archive”和“bin”的文件夹）：",path_ark:"游戏文件夹路径（包含“BmGame”的文件夹）：",use_folder:"使用此文件夹",
+now:"当前主菜单音乐",looking:"正在查找游戏 …",track:"曲目 {n}",listen:"▶ 试听当前菜单曲目",loading:"加载中 …",again:"▶ 从头重新播放",
+cp_note:"游戏会根据情况从三首菜单曲目中选择一首（1:44 – 6:00）。三首都会被替换。",
+your_song:"你的歌曲",drop:"将 MP3 或 WAV 拖放到此处",browse:"或点击浏览",other:"重新选择",c1:"任意长度",c2:"无需静音片段",c3:"无缝循环",
+go:"设为菜单音乐",restore_cp:"移除 Mod / 恢复原版",restore_ark:"恢复原版音乐",quit:"退出",
+foot_cp:"删除 Mod 文件即可恢复原版",foot_ark:"原版文件会自动备份",
+conf:"提示：其他 Mod 也替换了这段音乐（{list}）。如果听不到变化，请重命名我们的文件或移除它们。",
+custom:"自定义：{s}",len_cp:"时长 {t} · 已调整循环 · Mod 已启用",len_ark:"时长 {t} · 已调整循环",
+legacy_t:"自定义（旧版工具）：{s}",legacy_s:"时长/循环尚未调整——请重新应用",
+orig:"原版音乐",unch_cp:"未更改（未安装 Mod）",unch_ark:"未更改",nogame:"未找到游戏",
+pick_err:"请选择 MP3 或 WAV 文件。",play_err:"无法播放当前曲目：{e}",starting:"正在开始 …",
+done_cp:"完成！你的歌曲（{t}）现在是菜单音乐。请完全重启游戏，然后打开主菜单。",
+done_ark:"完成！你的歌曲（{t}）现在是菜单音乐。请启动游戏并打开主菜单。",
+err:"错误：{e}",confirm:"要恢复原版菜单音乐吗？",restored:"已恢复原版音乐。",closed:"已关闭。你可以关闭此标签页。",
+locating:"正在游戏文件中查找菜单音乐 …",
+p_check:"正在检查游戏数据 …",p_bank:"正在读取原版音频库 …",p_read:"正在读取音乐 …",
+p_conv:"正在将 {m}:{s} 的音乐转换为游戏格式——可能需要 {a}–{b} 分钟 …",
+p_adjust:"正在调整长度和循环 …",p_write:"正在将音乐写入游戏文件 …",p_mod:"正在写入 Mod 文件 …",p_done:"完成。"},
+"zh-TW":{name:"繁體中文",h1a:"選單",h1b:"音樂",
+lead_cp:"僅將<b>主選單音樂</b>替換為你自己的歌曲。不會修改任何遊戲檔案——只會新增一個小型 Mod 檔案，你可以隨時移除。",
+lead_ark:"僅將<b>主選單音樂</b>替換為你自己的歌曲。遊戲中的其他內容不會被更動。",
+setup_title:"找不到遊戲",path_cp:"遊戲資料夾路徑（包含「archive」與「bin」的資料夾）：",path_ark:"遊戲資料夾路徑（包含「BmGame」的資料夾）：",use_folder:"使用此資料夾",
+now:"目前的主選單音樂",looking:"正在尋找遊戲 …",track:"曲目 {n}",listen:"▶ 試聽目前的選單曲目",loading:"載入中 …",again:"▶ 從頭重新播放",
+cp_note:"遊戲會依情況從三首選單曲目中選擇一首（1:44 – 6:00）。三首都會被替換。",
+your_song:"你的歌曲",drop:"將 MP3 或 WAV 拖放到此處",browse:"或點擊瀏覽",other:"重新選擇",c1:"任意長度",c2:"不需要靜音片段",c3:"無縫循環",
+go:"設為選單音樂",restore_cp:"移除 Mod / 還原原版",restore_ark:"還原原版音樂",quit:"結束",
+foot_cp:"刪除 Mod 檔案即可還原原版",foot_ark:"原版檔案會自動備份",
+conf:"提示：其他 Mod 也替換了這段音樂（{list}）。若聽不到變化，請重新命名我們的檔案或移除它們。",
+custom:"自訂：{s}",len_cp:"長度 {t} · 已調整循環 · Mod 已啟用",len_ark:"長度 {t} · 已調整循環",
+legacy_t:"自訂（舊版工具）：{s}",legacy_s:"長度／循環尚未調整——請重新套用",
+orig:"原版音樂",unch_cp:"未變更（未安裝 Mod）",unch_ark:"未變更",nogame:"找不到遊戲",
+pick_err:"請選擇 MP3 或 WAV 檔案。",play_err:"無法播放目前的曲目：{e}",starting:"正在開始 …",
+done_cp:"完成！你的歌曲（{t}）現在是選單音樂。請完全重新啟動遊戲，然後開啟主選單。",
+done_ark:"完成！你的歌曲（{t}）現在是選單音樂。請啟動遊戲並開啟主選單。",
+err:"錯誤：{e}",confirm:"要還原原版選單音樂嗎？",restored:"已還原原版音樂。",closed:"已關閉。你可以關閉此分頁。",
+locating:"正在遊戲檔案中尋找選單音樂 …",
+p_check:"正在檢查遊戲資料 …",p_bank:"正在讀取原版音效庫 …",p_read:"正在讀取音樂 …",
+p_conv:"正在將 {m}:{s} 的音樂轉換為遊戲格式——可能需要 {a}–{b} 分鐘 …",
+p_adjust:"正在調整長度與循環 …",p_write:"正在將音樂寫入遊戲檔案 …",p_mod:"正在寫入 Mod 檔案 …",p_done:"完成。"},
+ja:{name:"日本語",h1a:"メニュー",h1b:"ミュージック",
+lead_cp:"<b>メインメニューの音楽だけ</b>を、あなたの好きな曲に置き換えます。ゲームファイルは変更されません。小さな MOD ファイルを1つ追加するだけで、いつでも削除できます。",
+lead_ark:"<b>メインメニューの音楽だけ</b>を、あなたの好きな曲に置き換えます。ゲーム内のほかの部分には触れません。",
+setup_title:"ゲームが見つかりません",path_cp:"ゲームフォルダのパス（「archive」と「bin」が入っているフォルダ）：",path_ark:"ゲームフォルダのパス（「BmGame」が入っているフォルダ）：",use_folder:"このフォルダを使う",
+now:"現在のメインメニュー",looking:"ゲームを検索中 …",track:"トラック {n}",listen:"▶ 現在のメニュー曲を試聴",loading:"読み込み中 …",again:"▶ 最初から再生",
+cp_note:"ゲームは状況に応じて3つのメニュー曲（1:44 – 6:00）のうち1つを選びます。3曲すべてが置き換えられます。",
+your_song:"あなたの曲",drop:"MP3 または WAV をここにドロップ",browse:"またはクリックして選択",other:"別のファイルを選ぶ",c1:"長さは自由",c2:"無音部分は不要",c3:"シームレスループ",
+go:"メニュー音楽に設定",restore_cp:"MOD を削除 / 元に戻す",restore_ark:"元の音楽に戻す",quit:"終了",
+foot_cp:"MOD ファイルを削除すると元に戻ります",foot_ark:"元のファイルは自動でバックアップされます",
+conf:"注意：他の MOD もこの音楽を置き換えています（{list}）。変化が聞こえない場合は、当ツールのファイル名を変更するか、それらを削除してください。",
+custom:"カスタム：{s}",len_cp:"長さ {t} · ループ調整済み · MOD 有効",len_ark:"長さ {t} · ループ調整済み",
+legacy_t:"カスタム（旧ツール）：{s}",legacy_s:"長さ・ループが未調整です。もう一度適用してください",
+orig:"元の音楽",unch_cp:"変更なし（MOD 未導入）",unch_ark:"変更なし",nogame:"ゲームが見つかりません",
+pick_err:"MP3 または WAV ファイルを選んでください。",play_err:"現在の曲を再生できませんでした：{e}",starting:"開始中 …",
+done_cp:"完了！あなたの曲（{t}）がメニュー音楽になりました。ゲームを完全に再起動して、メインメニューを開いてください。",
+done_ark:"完了！あなたの曲（{t}）がメニュー音楽になりました。ゲームを起動して、メインメニューを開いてください。",
+err:"エラー：{e}",confirm:"元のメニュー音楽に戻しますか？",restored:"元の音楽に戻しました。",closed:"終了しました。このタブは閉じて構いません。",
+locating:"ゲームファイルからメニュー音楽を探しています …",
+p_check:"ゲームデータを確認中 …",p_bank:"元のサウンドバンクを読み込み中 …",p_read:"音楽を読み込み中 …",
+p_conv:"{m}:{s} 分の音楽をゲーム形式に変換中（{a}～{b} 分かかる場合があります）…",
+p_adjust:"長さとループを調整中 …",p_write:"音楽をゲームファイルに書き込み中 …",p_mod:"MOD ファイルを書き込み中 …",p_done:"完了。"},
+ko:{name:"한국어",h1a:"메뉴",h1b:" 음악",
+lead_cp:"<b>메인 메뉴 음악만</b> 내가 고른 곡으로 바꿉니다. 게임 파일은 수정하지 않으며, 언제든 삭제할 수 있는 작은 모드 파일 하나만 추가됩니다.",
+lead_ark:"<b>메인 메뉴 음악만</b> 내가 고른 곡으로 바꿉니다. 게임의 다른 부분은 건드리지 않습니다.",
+setup_title:"게임을 찾을 수 없음",path_cp:"게임 폴더 경로(“archive”와 “bin”이 들어 있는 폴더):",path_ark:"게임 폴더 경로(“BmGame”이 들어 있는 폴더):",use_folder:"이 폴더 사용",
+now:"현재 메인 메뉴 음악",looking:"게임을 찾는 중 …",track:"트랙 {n}",listen:"▶ 현재 메뉴 트랙 듣기",loading:"불러오는 중 …",again:"▶ 처음부터 다시 재생",
+cp_note:"게임은 상황에 따라 세 개의 메뉴 트랙(1:44 – 6:00) 중 하나를 고릅니다. 세 곡 모두 교체됩니다.",
+your_song:"내 곡",drop:"MP3 또는 WAV 파일을 여기에 끌어다 놓으세요",browse:"또는 클릭하여 찾아보기",other:"다른 파일 선택",c1:"길이 제한 없음",c2:"무음 구간 불필요",c3:"끊김 없는 반복",
+go:"메뉴 음악으로 설정",restore_cp:"모드 제거 / 원본 복원",restore_ark:"원본 음악 복원",quit:"종료",
+foot_cp:"모드 파일을 삭제하면 원본으로 돌아갑니다",foot_ark:"원본은 자동으로 백업됩니다",
+conf:"참고: 다른 모드도 이 음악을 교체합니다({list}). 변화가 들리지 않으면 이 도구의 파일 이름을 바꾸거나 해당 모드를 제거하세요.",
+custom:"사용자 지정: {s}",len_cp:"길이 {t} · 반복 조정됨 · 모드 활성",len_ark:"길이 {t} · 반복 조정됨",
+legacy_t:"사용자 지정(이전 도구): {s}",legacy_s:"길이/반복이 아직 조정되지 않음 – 다시 적용하세요",
+orig:"원본 음악",unch_cp:"변경 없음(모드 미설치)",unch_ark:"변경 없음",nogame:"게임을 찾을 수 없음",
+pick_err:"MP3 또는 WAV 파일을 선택하세요.",play_err:"현재 트랙을 재생할 수 없습니다: {e}",starting:"시작하는 중 …",
+done_cp:"완료! 내 곡({t})이 이제 메뉴 음악입니다. 게임을 완전히 다시 시작한 뒤 메인 메뉴를 여세요.",
+done_ark:"완료! 내 곡({t})이 이제 메뉴 음악입니다. 게임을 실행하고 메인 메뉴를 여세요.",
+err:"오류: {e}",confirm:"원래 메뉴 음악으로 복원할까요?",restored:"원본 음악이 복원되었습니다.",closed:"닫혔습니다. 이 탭은 닫아도 됩니다.",
+locating:"게임 파일에서 메뉴 음악을 찾는 중 …",
+p_check:"게임 데이터 확인 중 …",p_bank:"원본 사운드 뱅크 읽는 중 …",p_read:"음악 읽는 중 …",
+p_conv:"{m}:{s} 분량의 음악을 게임 형식으로 변환 중 – {a}~{b}분 걸릴 수 있습니다 …",
+p_adjust:"길이와 반복 조정 중 …",p_write:"음악을 게임 파일에 쓰는 중 …",p_mod:"모드 파일 쓰는 중 …",p_done:"완료."},
+ar:{name:"العربية",rtl:1,h1a:"موسيقى",h1b:" القائمة",
+lead_cp:"يستبدل <b>موسيقى القائمة الرئيسية فقط</b> بأغنيتك الخاصة. لا يتم تعديل أي ملفات من اللعبة – يُضاف ملف مود صغير واحد يمكنك إزالته في أي وقت.",
+lead_ark:"يستبدل <b>موسيقى القائمة الرئيسية فقط</b> بأغنيتك الخاصة. لا يتم المساس بأي شيء آخر في اللعبة.",
+setup_title:"لم يتم العثور على اللعبة",path_cp:"مسار مجلد اللعبة (المجلد الذي يحتوي على «archive» و«bin»):",path_ark:"مسار مجلد اللعبة (المجلد الذي يحتوي على «BmGame»):",use_folder:"استخدام هذا المجلد",
+now:"الموسيقى الحالية في القائمة الرئيسية",looking:"جارٍ البحث عن اللعبة …",track:"المقطع {n}",listen:"▶ استمع إلى مقطع القائمة الحالي",loading:"جارٍ التحميل …",again:"▶ التشغيل من البداية",
+cp_note:"تختار اللعبة أحد ثلاثة مقاطع للقائمة (1:44 – 6:00) بحسب الموقف. يتم استبدال الثلاثة جميعًا.",
+your_song:"أغنيتك",drop:"أفلت ملف MP3 أو WAV هنا",browse:"أو انقر للتصفح",other:"اختيار ملف آخر",c1:"أي مدة",c2:"لا حاجة لصمت",c3:"تكرار سلس",
+go:"تعيين كموسيقى للقائمة",restore_cp:"إزالة المود / استعادة الأصل",restore_ark:"استعادة الموسيقى الأصلية",quit:"خروج",
+foot_cp:"احذف ملف المود للعودة إلى الأصل",foot_ark:"يتم حفظ نسخة احتياطية من الأصل تلقائيًا",
+conf:"تنبيه: هناك مودات أخرى تستبدل هذه الموسيقى أيضًا ({list}). غيّر اسم ملفنا أو أزلها إذا لم تسمع أي تغيير.",
+custom:"مخصصة: {s}",len_cp:"المدة {t} · تم ضبط التكرار · المود مفعّل",len_ark:"المدة {t} · تم ضبط التكرار",
+legacy_t:"مخصصة (أداة قديمة): {s}",legacy_s:"لم يتم ضبط المدة/التكرار بعد – طبّق مرة أخرى",
+orig:"الموسيقى الأصلية",unch_cp:"دون تغيير (لا يوجد مود مثبّت)",unch_ark:"دون تغيير",nogame:"لم يتم العثور على لعبة",
+pick_err:"يرجى اختيار ملف MP3 أو WAV.",play_err:"تعذّر تشغيل المقطع الحالي: {e}",starting:"جارٍ البدء …",
+done_cp:"تم! أغنيتك ({t}) هي الآن موسيقى القائمة. أعد تشغيل اللعبة بالكامل ثم افتح القائمة الرئيسية.",
+done_ark:"تم! أغنيتك ({t}) هي الآن موسيقى القائمة. شغّل اللعبة وافتح القائمة الرئيسية.",
+err:"خطأ: {e}",confirm:"هل تريد استعادة موسيقى القائمة الأصلية؟",restored:"تمت استعادة الموسيقى الأصلية.",closed:"تم الإغلاق. يمكنك إغلاق هذه التبويبة.",
+locating:"جارٍ البحث عن موسيقى القائمة في ملفات اللعبة …",
+p_check:"جارٍ فحص بيانات اللعبة …",p_bank:"جارٍ قراءة بنك الصوت الأصلي …",p_read:"جارٍ قراءة الموسيقى …",
+p_conv:"جارٍ تحويل {m}:{s} من الموسيقى إلى تنسيق اللعبة – قد يستغرق {a}–{b} دقائق …",
+p_adjust:"جارٍ ضبط المدة والتكرار …",p_write:"جارٍ كتابة الموسيقى في ملفات اللعبة …",p_mod:"جارٍ كتابة ملف المود …",p_done:"تم."}
+};
+let LANG='en';
+function T(k,v){let s=(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
+function P(p){if(!p)return '';let m;
+ if(/^Checking game data/.test(p))return T('p_check');if(/^Reading the original sound bank/.test(p))return T('p_bank');
+ if(/^Reading music/.test(p))return T('p_read');
+ if(m=p.match(/^Converting (\d+):(\d+) of music.*?(\d+)–(\d+) minutes/))return T('p_conv',{m:m[1],s:m[2],a:m[3],b:m[4]});
+ if(/^Adjusting length/.test(p))return T('p_adjust');if(/^Writing music into/.test(p))return T('p_write');
+ if(/^Writing the mod file/.test(p))return T('p_mod');if(/^Done\./.test(p))return T('p_done');return p}
+function applyLang(){const d=document.documentElement;d.lang=LANG;d.dir=(I18N[LANG]&&I18N[LANG].rtl)?'rtl':'ltr';
+ document.querySelectorAll('[data-i]').forEach(e=>{e.innerHTML=T(e.dataset.i)});
+ document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=T('track',{n:e.dataset.t})});
+ const h=document.getElementById('h1');if(h)h.innerHTML=T('h1a')+'<span>'+T('h1b')+'</span>';
+ if(typeof render==='function')render()}
+function initLang(){let saved=null;try{saved=localStorage.getItem('mm_lang')}catch(e){}
+ const nav=(navigator.languages&&navigator.languages[0])||navigator.language||'en';const nl=nav.toLowerCase();
+ let g='en';if(saved&&I18N[saved])g=saved;else if(I18N[nav])g=nav;
+ else if(/^zh/.test(nl))g=/(tw|hk|mo|hant)/.test(nl)?'zh-TW':'zh-CN';else if(/^pt/.test(nl))g='pt-BR';
+ else{const b=nl.split('-')[0];if(I18N[b])g=b}
+ LANG=g;const sel=document.getElementById('lang');
+ for(const k of Object.keys(I18N)){const o=document.createElement('option');o.value=k;o.textContent=I18N[k].name;sel.appendChild(o)}
+ sel.value=LANG;sel.onchange=()=>{LANG=sel.value;try{localStorage.setItem('mm_lang',LANG)}catch(e){}applyLang()};applyLang()}
+
+const $=id=>document.getElementById(id);let chosen=null,ready=false,busy=false;
+function msg(t,c){const m=$('msg');m.className=t?c:'';m.textContent=t||'';$('lead').style.display=t?'none':'block'}
+const fmtT=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+async function api(u,o){const r=await fetch(u,o);const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.statusText);return j}
+let confChecked=false;async function conf(){try{const c=await api('/api/conflicts');if(c.length)msg(T('conf',{list:c.slice(0,3).join(', ')}),'in')}catch(e){}}
+async function render(){
+ try{const s=await api('/api/state');$('nowt').removeAttribute('data-i');
+  $('game').textContent=s.cooked||'';
+  $('setup').style.display=s.cooked?'none':'block';
+  ready=!!s.ready;if(ready&&!confChecked){confChecked=true;conf()}
+  if(s.error&&!busy)msg(s.error,'er');
+  
+  else if(!busy&&$('msg').className==='in')msg('','');
+  document.body.classList.toggle('busy',!!s.busy);
+  $('now').classList.toggle('custom',!!s.custom);
+  if(s.ready){
+   if(s.custom){$('nowt').textContent=T('custom',{s:s.src});$('nows').textContent=T('len_cp',{t:fmtT(s.durSec)})}
+   else{$('nowt').textContent=T('orig');$('nows').textContent=T('unch_cp')}
+  } else if(!s.loading&&!s.cooked){$('nowt').textContent=T('nogame');$('nows').textContent=''}
+  if(s.busy)$('prog').textContent=P(s.progress);
+  upd();
+ }catch(e){}
+}
+async function poll(){await render();setTimeout(poll,busy?600:1500)}
+function upd(){$('go').disabled=!(ready&&chosen&&!busy);if(!$('lbtn').dataset.busy)$('lbtn').disabled=!ready}
+function pick(f){
+ if(!f)return;if(!/\.(mp3|wav)$/i.test(f.name)){msg(T('pick_err'),'er');return}
+ msg('','');chosen=f;$('drop').style.display='none';$('fi').classList.add('show');$('fn').textContent=f.name;$('fm').textContent=(f.size/1e6).toFixed(1)+' MB';
+ $('aud').src=URL.createObjectURL(f);
+ $('aud').onloadedmetadata=()=>{const d=$('aud').duration;if(isFinite(d))$('fm').textContent=fmtT(d)+' · '+(f.size/1e6).toFixed(1)+' MB'};
+ upd();
+}
+$('drop').onclick=()=>$('file').click();$('other').onclick=()=>$('file').click();
+$('file').onchange=e=>pick(e.target.files[0]);
+['dragenter','dragover'].forEach(t=>document.addEventListener(t,e=>{e.preventDefault();$('drop').classList.add('over')}));
+['dragleave','drop'].forEach(t=>document.addEventListener(t,e=>{e.preventDefault();$('drop').classList.remove('over')}));
+document.addEventListener('drop',e=>{e.preventDefault();pick(e.dataTransfer.files[0])});
+$('lbtn').onclick=async()=>{
+ const b=$('lbtn');b.dataset.busy='1';b.disabled=true;b.textContent=T('loading');$('aud').pause();
+ try{const r=await fetch('/api/current?v='+$('vsel').value);if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.error||r.statusText)}
+  const start=parseFloat(r.headers.get('X-Start'))||0;const blob=await r.blob();
+  const a=$('caud');a.src=URL.createObjectURL(blob);a.classList.add('on');
+  a.onloadedmetadata=()=>{if(start>0)a.currentTime=start;a.play()};
+  a.onplay=()=>$('now').classList.add('playing');a.onpause=a.onended=()=>$('now').classList.remove('playing');
+  b.textContent=T('again');
+ }catch(e){msg(T('play_err',{e:e.message}),'er');b.textContent=T('listen')}
+ delete b.dataset.busy;upd();
+};
+$('go').onclick=async()=>{
+ if(!chosen)return;busy=true;upd();$('caud').pause();document.body.classList.add('busy');$('prog').textContent=T('starting');msg('','');
+ const fd=new FormData();fd.append('file',chosen);
+ try{const r=await api('/api/apply',{method:'POST',body:fd});
+  msg(T('done_cp',{t:fmtT(r.durSec)}),'ok');
+  $('caud').classList.remove('on');$('lbtn').textContent=T('listen')}
+ catch(e){msg(T('err',{e:e.message}),'er')}
+ busy=false;document.body.classList.remove('busy');$('prog').textContent='';upd();
+};
+$('restore').onclick=async()=>{if(!confirm(T('confirm')))return;busy=true;
+ try{await api('/api/restore',{method:'POST'});$('caud').classList.remove('on');$('lbtn').textContent=T('listen');msg(T('restored'),'ok')}catch(e){msg(T('err',{e:e.message}),'er')}busy=false};
+$('setdir').onclick=async()=>{try{await api('/api/setdir',{method:'POST',body:JSON.stringify({Path:$('path').value})});msg('','')}catch(e){msg(e.message,'er')}};
+$('quit').onclick=async()=>{try{await api('/api/quit')}catch(e){}document.body.innerHTML='<p style="padding:30px;color:#8a92a6">'+T('closed')+'</p>'};
+initLang();
+setInterval(()=>fetch('/api/ping').catch(()=>{}),2000);
+window.addEventListener('pagehide',()=>{try{navigator.sendBeacon('/api/quit')}catch(e){}});
+poll();
+</script></body></html>
