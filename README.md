@@ -4,7 +4,7 @@ A small Windows tool that lets you replace the music that plays on the Cyberpunk
 
 ## Download
 
-Grab the latest build from the **[Releases](../../releases)** page: `CP2077MenuMusicSwapper_v2.exe`.
+Grab the latest build from the **[Releases](../../releases)** page: `CP2077MenuMusicSwapper.exe`.
 
 No installer, no admin rights needed. Just run the `.exe`.
 
@@ -20,7 +20,7 @@ No installer, no admin rights needed. Just run the `.exe`.
 
 ## How to use
 
-1. Download and run `CP2077MenuMusicSwapper_v2.exe`.
+1. Download and run `CP2077MenuMusicSwapper.exe`.
 2. A browser tab opens automatically with the tool's interface.
 3. Point it at your Cyberpunk 2077 installation folder if it isn't auto-detected.
 4. Pick your audio file and apply it.
@@ -32,7 +32,7 @@ Requires [Go](https://go.dev/) 1.24+.
 
 ```bash
 cd src
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o CP2077MenuMusicSwapper_v2.exe .
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o CP2077MenuMusicSwapper.exe .
 ```
 
 The audio decode/encode pipeline (Wwise/Vorbis codec handling) is implemented from scratch in pure Go — no external decoder binaries are embedded or launched at runtime.
